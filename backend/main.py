@@ -22,7 +22,7 @@ class SaltUpload(BaseModel):
 
 @app.post("/upload-salt")
 def upload_salt(data: SaltUpload):
-    r.set(data.email, data.salt)
+    r.set(data.email, data.salt, ex=300)
     print(f"[Server] Salt stored for {data.email}")
     return {"status": "salt uploaded", "email": data.email}
 
@@ -32,6 +32,13 @@ def get_salt(email: str):
     if not salt_b64:
         raise HTTPException(404, f"No salt for {email}")
     return {"email": email, "salt": salt_b64.decode()}
+
+@app.get("/ttl/{email}")
+def get_ttl(email: str):
+    ttl = r.ttl(email)
+    if ttl == -2:
+        raise HTTPException(404, "No salt")
+    return {"email": email, "seconds_left": ttl}
 
 @app.get("/")
 def home():

@@ -3,274 +3,106 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Keyserver - Salt Exchange</title>
+  <title>Salt Keyserver</title>
   <style>
-    :root {
-      --primary: #2563eb;
-      --success: #16a34a;
-      --danger: #dc2626;
-      --gray: #6b7280;
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to bottom right, #f8fafc, #e2e8f0);
-      margin: 0;
-      padding: 2rem;
-      color: #1e293b;
-    }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      overflow: hidden;
-    }
-    header {
-      background: var(--primary);
-      color: white;
-      padding: 1.5rem;
-      text-align: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 1.8rem;
-      font-weight: 600;
-    }
-    .content {
-      padding: 2rem;
-    }
-    .card {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .card h2 {
-      margin: 0 0 1rem 0;
-      color: var(--primary);
-      font-size: 1.3rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .form-group {
-      margin-bottom: 1rem;
-    }
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-      color: #374151;
-    }
-    input[type="email"], input[type="text"] {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 1rem;
-      transition: border 0.2s;
-    }
-    input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
-    }
-    button {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    button:hover {
-      background: #1d4ed8;
-    }
-    button.success { background: var(--success); }
-    button.success:hover { background: #15803d; }
-    .result {
-      margin-top: 1rem;
-      padding: 1rem;
-      border-radius: 6px;
-      font-family: 'Courier New', monospace;
-      font-size: 0.9rem;
-      word-break: break-all;
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-    }
-    .result.success {
-      background: #f0fdf4;
-      border-color: #bbf7d0;
-      color: #166534;
-    }
-    .result.error {
-      background: #fef2f2;
-      border-color: #fecaca;
-      color: #991b1b;
-    }
-    .info {
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      color: #1e40af;
-      padding: 1rem;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      margin-top: 1.5rem;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
-    @media (max-width: 768px) {
-      .grid { grid-template-columns: 1fr; }
-    }
+    body { font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 1rem; background: #f9fafb; }
+    .card { background: white; padding: 1.5rem; margin: 1rem 0; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; }
+    h1 { text-align: center; color: #1f2937; }
+    .warning { background: #fef3c7; color: #92400e; padding: 1rem; text-align: center; border-radius: 8px; font-weight: 500; }
+    label { display: block; margin: 0.5rem 0 0.25rem; font-weight: 600; color: #374151; }
+    input, textarea { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-family: monospace; }
+    button { background: #3b82f6; color: white; border: none; padding: 0.75rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 500; margin-top: 0.5rem; }
+    button:hover { background: #2563eb; }
+    button.warn { background: #f59e0b; }
+    .result { margin-top: 1rem; padding: 1rem; background: #f3f4f6; border-radius: 6px; font-family: monospace; white-space: pre-wrap; }
+    .success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+    .error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <header>
-      <h1>Keyserver - Salt Exchange</h1>
-    </header>
+  <h1>Salt Keyserver</h1>
+  <div class="warning">Salts auto-delete after 5 minutes!</div>
 
-    <div class="content">
-      <div class="grid">
-        <!-- Upload Salt -->
-        <div class="card">
-          <h2>Upload Salt</h2>
-          <div class="form-group">
-            <label for="upload-email">Email Address</label>
-            <input type="email" id="upload-email" placeholder="you@example.com" value="user@example.com" />
-          </div>
-          <button onclick="uploadSalt()">
-            Generate & Upload Salt
-          </button>
-          <div id="upload-result"></div>
-        </div>
+  <div class="grid">
+    <!-- Upload -->
+    <div class="card">
+      <h2>Upload Salt</h2>
+      <label>Email</label>
+      <input id="upload-email" placeholder="you@example.com" value="test@example.com" />
+      <label>Salt (text or base64)</label>
+      <textarea id="upload-salt" rows="3" placeholder="Enter your salt here...">my-random-salt-123</textarea>
+      <button onclick="upload()">Upload</button>
+      <div id="upload-result" class="result"></div>
+    </div>
 
-        <!-- Search Salt -->
-        <div class="card">
-          <h2>Search Salt</h2>
-          <div class="form-group">
-            <label for="search-email">Email to Search</label>
-            <input type="email" id="search-email" placeholder="user@example.com" value="user@example.com" />
-          </div>
-          <button onclick="searchSalt()" class="success">
-            Search Salt
-          </button>
-          <div id="search-result"></div>
-        </div>
-      </div>
-
-      <!-- Derived Key -->
-      <div class="card">
-        <h2>Derived Key</h2>
-        <p><strong>Password:</strong> <code>shared-secret</code> (same for all users)</p>
-        <div id="derived-key" class="result"></div>
-      </div>
-
-      <div class="info">
-        <strong>How it works:</strong><br>
-        1. Enter your email and click "Upload" → a random 16-byte salt is generated and stored.<br>
-        2. Anyone can search your email to retrieve the salt.<br>
-        3. Using the same password + salt → both derive the same key.
-      </div>
+    <!-- Search -->
+    <div class="card">
+      <h2>Search Salt</h2>
+      <label>Email to Search</label>
+      <input id="search-email" placeholder="test@example.com" value="test@example.com" />
+      <button onclick="search()">Search</button>
+      <button onclick="checkTTL()" class="warn">Check Time Left</button>
+      <div id="search-result" class="result"></div>
     </div>
   </div>
 
   <script>
     const SERVER = "https://keyserver-backend.arsalanse.ir";
 
-    async function uploadSalt() {
+    async function upload() {
       const email = document.getElementById("upload-email").value.trim();
-      if (!email || !email.includes("@")) {
-        showResult("upload-result", "Invalid email!", "error");
-        return;
-      }
-
-      const salt = crypto.getRandomValues(new Uint8Array(16));
-      const saltB64 = btoa(String.fromCharCode(...salt));
+      const salt = document.getElementById("upload-salt").value.trim();
+      if (!email || !salt) return show("upload-result", "Fill both fields!", "error");
 
       try {
-        const res = await fetch(`${SERVER}/upload-salt`, {
+        const res = await fetch(`${SERVER}/upload`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, salt: saltB64 })
+          body: JSON.stringify({ email, salt })
         });
-
         if (res.ok) {
-          showResult("upload-result", 
-            `<strong>Success!</strong><br>
-             Salt uploaded for <code>${email}</code><br>
-             <code>${saltB64}</code>`, "success");
-          deriveKey(saltB64);
-        } else {
-          throw new Error("Upload failed");
-        }
-      } catch (err) {
-        showResult("upload-result", "Failed to upload salt.", "error");
+          show("upload-result", `Uploaded!\nSalt: ${salt}\nExpires in 5 min`, "success");
+        } else throw new Error();
+      } catch {
+        show("upload-result", "Upload failed!", "error");
       }
     }
 
-    async function searchSalt() {
+    async function search() {
       const email = document.getElementById("search-email").value.trim();
-      if (!email || !email.includes("@")) {
-        showResult("search-result", "Invalid email!", "error");
-        return;
-      }
+      if (!email) return show("search-result", "Enter email!", "error");
 
       try {
         const res = await fetch(`${SERVER}/salt/${encodeURIComponent(email)}`);
-        if (!res.ok) throw new Error("Not found");
-
+        if (!res.ok) throw new Error();
         const data = await res.json();
-        showResult("search-result", 
-          `<strong>Found!</strong><br>
-           Salt for <code>${email}</code>:<br>
-           <code>${data.salt}</code>`, "success");
-        deriveKey(data.salt);
-      } catch (err) {
-        showResult("search-result", `No salt found for<br><code>${email}</code>.`, "error");
+        show("search-result", `Found!\nSalt: ${data.salt}`, "success");
+      } catch {
+        show("search-result", `No salt (expired or not uploaded)`, "error");
       }
     }
 
-    async function deriveKey(saltB64) {
-      const password = "shared-secret";
-      const salt = Uint8Array.from(atob(saltB64), c => c.charCodeAt(0));
-      const enc = new TextEncoder();
+    async function checkTTL() {
+      const email = document.getElementById("search-email").value.trim();
+      if (!email) return show("search-result", "Enter email!", "error");
 
-      const keyMaterial = await crypto.subtle.importKey(
-        "raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]
-      );
-      const aesKey = await crypto.subtle.deriveKey(
-        { name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" },
-        keyMaterial,
-        { name: "AES-GCM", length: 256 },
-        true,
-        ["encrypt"]
-      );
-      const raw = await crypto.subtle.exportKey("raw", aesKey);
-      const hex = Array.from(new Uint8Array(raw))
-        .map(b => b.toString(16).padStart(2, '0')).join('');
-
-      document.getElementById("derived-key").innerHTML = 
-        `<strong>Key:</strong><br>
-         <code style="color:#16a34a;">${hex}</code>`;
+      try {
+        const res = await fetch(`${SERVER}/ttl/${encodeURIComponent(email)}`);
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        show("search-result", `Time left: ${data.seconds_left} sec (~${Math.floor(data.seconds_left/60)} min)`, "success");
+      } catch {
+        show("search-result", `No salt found`, "error");
+      }
     }
 
-    function showResult(id, html, type = "") {
+    function show(id, text, type) {
       const el = document.getElementById(id);
-      el.innerHTML = html;
-      el.className = "result" + (type ? " " + type : "");
+      el.textContent = text;
+      el.className = `result ${type}`;
     }
   </script>
 
