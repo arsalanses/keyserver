@@ -42,4 +42,4 @@ def get_ttl(email: str):
 
 @app.get("/")
 def home():
-    return {"message": "Salt Keyserver", "endpoints": ["/upload-salt", "/salt/{email}"]}
+    return {"message": "Salt Keyserver", "endpoints": ["/upload-salt", "/salt/{email}", "/ttl/{email}"]}
