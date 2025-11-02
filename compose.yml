@@ -59,3 +59,7 @@ services:
       - "traefik.http.routers.keyserver-frontend.observability.metrics=false"
       - "traefik.http.routers.keyserver-frontend.observability.accessLogs=false"
       - "traefik.http.routers.keyserver-frontend.observability.tracing=false"
+
+networks:
+  web:
+    external: true
