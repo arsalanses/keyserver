@@ -6,7 +6,7 @@ import base64
 
 app = FastAPI(title="Salt Keyserver (Email-based)")
 
-r = redis.Redis(host='redis', port=6379, db=0)
+r = redis.Redis(host='keyserver-redis', port=6379, db=0)
 
 app.add_middleware(
     CORSMiddleware,
