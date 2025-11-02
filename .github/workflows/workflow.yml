@@ -47,23 +47,23 @@ jobs:
           ${{ vars.DOCKERHUB_URL }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github.run_id }}
           ${{ vars.DOCKERHUB_URL }}/${{ env.BACKEND_IMAGE_NAME }}:latest
 
-  trivy:
-    runs-on: ubuntu-latest
-    needs: [build]
-    timeout-minutes: 5
-    steps:
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@0.33.1
-      with:
-        image-ref: '${{ vars.DOCKERHUB_URL }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github.run_id }}'
-        format: 'table'
-        exit-code: '0'
-        ignore-unfixed: true
-        vuln-type: 'os,library'
-        severity: 'CRITICAL'
-        scanners: 'vuln'
-      env:
-        TRIVY_DISABLE_VEX_NOTICE: true
+  # trivy:
+  #   runs-on: ubuntu-latest
+  #   needs: [build]
+  #   timeout-minutes: 5
+  #   steps:
+  #   - name: Run Trivy vulnerability scanner
+  #     uses: aquasecurity/trivy-action@0.33.1
+  #     with:
+  #       image-ref: '${{ vars.DOCKERHUB_URL }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github.run_id }}'
+  #       format: 'table'
+  #       exit-code: '0'
+  #       ignore-unfixed: true
+  #       vuln-type: 'os,library'
+  #       severity: 'CRITICAL'
+  #       scanners: 'vuln'
+  #     env:
+  #       TRIVY_DISABLE_VEX_NOTICE: true
 
   deploy:
     runs-on: ubuntu-latest

@@ -173,7 +173,7 @@
 
       <!-- Derived Key -->
       <div class="card">
-        <h2>Derived AES Key (PBKDF2)</h2>
+        <h2>Derived Key</h2>
         <p><strong>Password:</strong> <code>shared-secret</code> (same for all users)</p>
         <div id="derived-key" class="result"></div>
       </div>
@@ -182,7 +182,7 @@
         <strong>How it works:</strong><br>
         1. Enter your email and click "Upload" → a random 16-byte salt is generated and stored.<br>
         2. Anyone can search your email to retrieve the salt.<br>
-        3. Using the same password + salt → both derive the same AES-256 key via PBKDF2.
+        3. Using the same password + salt → both derive the same key.
       </div>
     </div>
   </div>
@@ -239,7 +239,7 @@
            <code>${data.salt}</code>`, "success");
         deriveKey(data.salt);
       } catch (err) {
-        showResult("search-result", `No salt found for <code>${email}</code>.`, "error");
+        showResult("search-result", `No salt found for<br><code>${email}</code>.`, "error");
       }
     }
 
@@ -263,7 +263,7 @@
         .map(b => b.toString(16).padStart(2, '0')).join('');
 
       document.getElementById("derived-key").innerHTML = 
-        `<strong>AES-256 Key:</strong><br>
+        `<strong>Key:</strong><br>
          <code style="color:#16a34a;">${hex}</code>`;
     }
 
