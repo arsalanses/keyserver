@@ -1,0 +1,61 @@
+services:
+  redis:
+    image: redis:8.2
+    container_name: redis_stage
+    restart: unless-stopped
+    command:
+      - "redis-server"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - web
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  keyserver-backend:
+    image: harbor.rootcloud.ir/devops/keyserver-backend:latest
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.keyserver-backend.rule=Host(`keyserver-backend.arsalanse.ir`)"
+      - "traefik.http.routers.keyserver-backend.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.keyserver-backend.entrypoints=http,https"
+      - "traefik.http.services.keyserver-backend.loadbalancer.server.port=8000"
+      - "traefik.http.routers.keyserver-backend.observability.metrics=false"
+      - "traefik.http.routers.keyserver-backend.observability.accessLogs=false"
+      - "traefik.http.routers.keyserver-backend.observability.tracing=false"
+
+  keyserver-frontend:
+    image: harbor.rootcloud.ir/devops/keyserver-frontend:latest
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.keyserver-frontend.rule=Host(`keyserver-frontend.arsalanse.ir`)"
+      - "traefik.http.routers.keyserver-frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.keyserver-frontend.entrypoints=http,https"
+      - "traefik.http.services.keyserver-frontend.loadbalancer.server.port=80"
+      - "traefik.http.routers.keyserver-frontend.observability.metrics=false"
+      - "traefik.http.routers.keyserver-frontend.observability.accessLogs=false"
+      - "traefik.http.routers.keyserver-frontend.observability.tracing=false"
