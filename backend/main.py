@@ -1,10 +1,11 @@
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import Optional
-from fastapi import Request
 import redis
 import base64
+import secrets
+from typing import Optional
+from fastapi import Request
+from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Salt Keyserver (Email-based)")
 
