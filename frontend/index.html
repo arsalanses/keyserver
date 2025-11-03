@@ -2,131 +2,139 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Temporary Salt Keyserver for secure sharing" />
-  <title>Salt Keyserver</title>
-  <!-- Tailwind CSS CDN (for quick styling) -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <!-- Font Awesome CDN for icons -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <title>Salt Key Server</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 600px; margin: 2rem auto; padding: 1rem; }
+    h1 { font-size: 1.5rem; }
+    textarea, input { width: 100%; padding: 0.5rem; margin: 0.5rem 0; font: inherit; }
+    button { padding: 0.75rem 1rem; font: inherit; background: #007bff; color: white; border: none; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    pre { background: #f4f4f4; padding: 1rem; border-radius: 4px; overflow-x: auto; }
+    .tab { margin: 1rem 0; }
+    .tab button { background: #eee; color: black; margin-right: 0.5rem; }
+    .tab button.active { background: #007bff; color: white; }
+    .tabcontent { display: none; padding: 1rem 0; }
+    .tabcontent.active { display: block; }
+    a { color: #007bff; word-break: break-all; }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
+<body>
 
-  <header class="text-center mb-8">
-    <h1 class="text-3xl font-bold text-blue-600">Salt Keyserver</h1>
-    <div class="bg-yellow-200 text-yellow-800 p-3 rounded-md mt-2 font-semibold">
-      <i class="fas fa-exclamation-triangle mr-2"></i>Salts auto-delete after 5 minutes!
-    </div>
-  </header>
+  <h1>Salt Key Server</h1>
 
-  <main class="grid md:grid-cols-2 gap-6 w-full max-w-4xl">
-    <!-- Upload Card -->
-    <div class="bg-white p-6 rounded-lg shadow-md">
-      <h2 class="text-xl font-semibold mb-4 text-blue-600"><i class="fas fa-upload mr-2"></i>Upload Salt</h2>
-      <form>
-        <label for="upload-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-        <input id="upload-email" class="w-full p-2 border border-gray-300 rounded-md mb-4 focus:ring-blue-500 focus:border-blue-500" placeholder="you@example.com" type="email" autofocus required />
-        
-        <label for="upload-salt" class="block text-sm font-medium text-gray-700 mb-1">Salt (text or base64)</label>
-        <textarea id="upload-salt" rows="3" class="w-full p-2 border border-gray-300 rounded-md mb-4 font-mono focus:ring-blue-500 focus:border-blue-500" placeholder="Enter your salt here..." maxlength="256" required></textarea>
-        
-        <div class="flex space-x-2">
-          <button onclick="generateSalt()" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600" type="button"><i class="fas fa-dice mr-2"></i>Generate Random Salt</button>
-          <button onclick="upload(event)" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" type="submit"><i class="fas fa-upload mr-2"></i>Upload</button>
-        </div>
-      </form>
-      <div id="upload-result" class="mt-4 p-3 rounded-md hidden" role="alert"></div>
-    </div>
+  <!-- Tabs -->
+  <div class="tab">
+    <button class="active" onclick="openTab(event, 'email')">Email Mode</button>
+    <button onclick="openTab(event, 'anon')">Anonymous Link</button>
+  </div>
 
-    <!-- Search Card -->
-    <div class="bg-white p-6 rounded-lg shadow-md">
-      <h2 class="text-xl font-semibold mb-4 text-blue-600"><i class="fas fa-search mr-2"></i>Search Salt</h2>
-      <label for="search-email" class="block text-sm font-medium text-gray-700 mb-1">Email to Search</label>
-      <input id="search-email" class="w-full p-2 border border-gray-300 rounded-md mb-4 focus:ring-blue-500 focus:border-blue-500" placeholder="test@example.com" type="email" required />
-      
-      <div class="flex space-x-2">
-        <button onclick="search(event)" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"><i class="fas fa-search mr-2"></i>Search</button>
-        <button onclick="checkTTL(event)" class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600"><i class="fas fa-clock mr-2"></i>Check Time Left</button>
-      </div>
-      <div id="search-result" class="mt-4 p-3 rounded-md hidden" role="alert"></div>
-    </div>
-  </main>
+  <!-- Email Mode -->
+  <div id="email" class="tabcontent active">
+    <h2>1. Upload Salt (with Email)</h2>
+    <input type="email" id="email-input" placeholder="your@email.com" />
+    <textarea id="salt-email" placeholder="Base64 salt (e.g. a2V5c2FsdA==)" rows="3"></textarea>
+    <button onclick="uploadWithEmail()">Upload & Store</button>
+    <pre id="result-email"></pre>
 
-  <footer class="mt-8 text-gray-500 text-sm">Salt Keyserver Project | Expires in 5 min for security</footer>
+    <h2>2. Retrieve Later</h2>
+    <input type="email" id="fetch-email" placeholder="your@email.com" />
+    <button onclick="fetchByEmail()">Get Salt</button>
+    <pre id="fetch-result"></pre>
+  </div>
+
+  <!-- Anonymous Mode -->
+  <div id="anon" class="tabcontent">
+    <h2>1. Upload Salt → Get Link</h2>
+    <textarea id="salt-anon" placeholder="Base64 salt (e.g. a2V5c2FsdA==)" rows="3"></textarea>
+    <button onclick="uploadAnon()">Upload & Get Link</button>
+    <pre id="result-anon"></pre>
+
+    <h2>2. Open Link to Retrieve</h2>
+    <p>Paste the link you received:</p>
+    <input type="text" id="anon-url" placeholder="https://yoursite.com/s/abc123..." style="font-size:0.9rem;" />
+    <button onclick="fetchByLink()">Fetch Salt from Link</button>
+    <pre id="link-result"></pre>
+  </div>
 
   <script>
-    const SERVER = "https://keyserver-backend.arsalanse.ir";
+    // const API_BASE = location.href.replace(/\/[^/]*$/, '');
+    const API_BASE = "https://keyserver-backend.arsalanse.ir";
 
-    function generateSalt() {
-      const salt = crypto.randomUUID();  // Simple random salt generation
-      document.getElementById("upload-salt").value = salt;
+    function openTab(evt, tabName) {
+      document.querySelectorAll(".tabcontent").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".tab button").forEach(b => b.classList.remove("active"));
+      document.getElementById(tabName).classList.add("active");
+      evt.currentTarget.classList.add("active");
     }
 
-    async function upload(e) {
-      e.preventDefault();
-      const email = document.getElementById("upload-email").value.trim();
-      const salt = document.getElementById("upload-salt").value.trim();
-      if (!email || !salt || !email.includes('@')) return show("upload-result", "Invalid email or salt!", "bg-red-100 text-red-800");
+    // === EMAIL MODE ===
+    async function uploadWithEmail() {
+      const email = document.getElementById("email-input").value.trim();
+      const salt = document.getElementById("salt-email").value.trim();
+      const out = document.getElementById("result-email");
+      if (!email || !salt) return alert("Fill both fields");
 
-      show("upload-result", "Uploading...", "bg-blue-100 text-blue-800");  // Loading state
       try {
-        const res = await fetch(`${SERVER}/upload-salt`, {
+        const res = await fetch(`${API_BASE}/upload-salt`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, salt })
         });
-        if (res.ok) {
-          show("upload-result", `Uploaded!<br>Salt: ${salt}<br>Expires in 5 min`, "bg-green-100 text-green-800");
-        } else throw new Error();
-      } catch {
-        show("upload-result", "Upload failed! Check backend.", "bg-red-100 text-red-800");
-      }
-    }
-
-    async function search(e) {
-      e.preventDefault();
-      const email = document.getElementById("search-email").value.trim();
-      if (!email || !email.includes('@')) return show("search-result", "Invalid email!", "bg-red-100 text-red-800");
-
-      show("search-result", "Searching...", "bg-blue-100 text-blue-800");
-      try {
-        const res = await fetch(`${SERVER}/salt/${encodeURIComponent(email)}`);
-        if (!res.ok) throw new Error();
         const data = await res.json();
-        const result = `Found!<br>Salt: ${data.salt} <button onclick="copyToClipboard('${data.salt}')" class="ml-2 text-blue-600 underline">Copy</button>`;
-        show("search-result", result, "bg-green-100 text-green-800");
-      } catch {
-        show("search-result", `No salt (expired or not uploaded)`, "bg-red-100 text-red-800");
+        out.textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        out.textContent = "Error: " + e.message;
       }
     }
 
-    async function checkTTL(e) {
-      e.preventDefault();
-      const email = document.getElementById("search-email").value.trim();
-      if (!email || !email.includes('@')) return show("search-result", "Invalid email!", "bg-red-100 text-red-800");
+    async function fetchByEmail() {
+      const email = document.getElementById("fetch-email").value.trim();
+      const out = document.getElementById("fetch-result");
+      if (!email) return alert("Enter email");
 
-      show("search-result", "Checking...", "bg-blue-100 text-blue-800");
       try {
-        const res = await fetch(`${SERVER}/ttl/${encodeURIComponent(email)}`);
-        if (!res.ok) throw new Error();
+        const res = await fetch(`${API_BASE}/salt/${encodeURIComponent(email)}`);
         const data = await res.json();
-        show("search-result", `Time left: ${data.seconds_left} sec (~${Math.floor(data.seconds_left/60)} min)`, "bg-yellow-100 text-yellow-800");
-      } catch {
-        show("search-result", `No salt found`, "bg-red-100 text-red-800");
+        out.textContent = res.ok ? JSON.stringify(data, null, 2) : `Error ${res.status}: ${data.detail}`;
+      } catch (e) {
+        out.textContent = "Error: " + e.message;
       }
     }
 
-    function show(id, html, classes) {
-      const el = document.getElementById(id);
-      el.innerHTML = html;  // Use innerHTML for buttons
-      el.className = `mt-4 p-3 rounded-md ${classes}`;
-      el.classList.remove('hidden');
-      el.style.transition = 'opacity 0.3s';  // Fade-in
-      el.style.opacity = 1;
+    // === ANON MODE ===
+    async function uploadAnon() {
+      const salt = document.getElementById("salt-anon").value.trim();
+      const out = document.getElementById("result-anon");
+      if (!salt) return alert("Enter salt");
+
+      try {
+        const res = await fetch(`${API_BASE}/upload-salt-anon`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ salt })
+        });
+        const data = await res.json();
+        const pretty = JSON.stringify(data, null, 2);
+        out.innerHTML = pretty.replace(/"(https?:\/\/[^"]+)"/g, '"<a href="$1" target="_blank">$1</a>"');
+      } catch (e) {
+        out.textContent = "Error: " + e.message;
+      }
     }
 
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => alert("Salt copied!"));
+    async function fetchByLink() {
+      let url = document.getElementById("anon-url").value.trim();
+      const out = document.getElementById("link-result");
+      if (!url) return alert("Paste the link");
+
+      if (!url.startsWith("http")) url = API_BASE + url.replace(/^\/+/, '/');
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        out.textContent = res.ok ? JSON.stringify(data, null, 2) : `Error ${res.status}: ${data.detail || data}`;
+      } catch (e) {
+        out.textContent = "Error: " + e.message;
+      }
     }
   </script>
 

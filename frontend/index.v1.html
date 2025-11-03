@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Temporary Salt Keyserver for secure sharing" />
+  <title>Salt Keyserver</title>
+  <!-- Tailwind CSS CDN (for quick styling) -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Font Awesome CDN for icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
+
+  <header class="text-center mb-8">
+    <h1 class="text-3xl font-bold text-blue-600">Salt Keyserver</h1>
+    <div class="bg-yellow-200 text-yellow-800 p-3 rounded-md mt-2 font-semibold">
+      <i class="fas fa-exclamation-triangle mr-2"></i>Salts auto-delete after 5 minutes!
+    </div>
+  </header>
+
+  <main class="grid md:grid-cols-2 gap-6 w-full max-w-4xl">
+    <!-- Upload Card -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-xl font-semibold mb-4 text-blue-600"><i class="fas fa-upload mr-2"></i>Upload Salt</h2>
+      <form>
+        <label for="upload-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input id="upload-email" class="w-full p-2 border border-gray-300 rounded-md mb-4 focus:ring-blue-500 focus:border-blue-500" placeholder="you@example.com" type="email" autofocus required />
+        
+        <label for="upload-salt" class="block text-sm font-medium text-gray-700 mb-1">Salt (text or base64)</label>
+        <textarea id="upload-salt" rows="3" class="w-full p-2 border border-gray-300 rounded-md mb-4 font-mono focus:ring-blue-500 focus:border-blue-500" placeholder="Enter your salt here..." maxlength="256" required></textarea>
+        
+        <div class="flex space-x-2">
+          <button onclick="generateSalt()" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600" type="button"><i class="fas fa-dice mr-2"></i>Generate Random Salt</button>
+          <button onclick="upload(event)" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" type="submit"><i class="fas fa-upload mr-2"></i>Upload</button>
+        </div>
+      </form>
+      <div id="upload-result" class="mt-4 p-3 rounded-md hidden" role="alert"></div>
+    </div>
+
+    <!-- Search Card -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-xl font-semibold mb-4 text-blue-600"><i class="fas fa-search mr-2"></i>Search Salt</h2>
+      <label for="search-email" class="block text-sm font-medium text-gray-700 mb-1">Email to Search</label>
+      <input id="search-email" class="w-full p-2 border border-gray-300 rounded-md mb-4 focus:ring-blue-500 focus:border-blue-500" placeholder="test@example.com" type="email" required />
+      
+      <div class="flex space-x-2">
+        <button onclick="search(event)" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"><i class="fas fa-search mr-2"></i>Search</button>
+        <button onclick="checkTTL(event)" class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600"><i class="fas fa-clock mr-2"></i>Check Time Left</button>
+      </div>
+      <div id="search-result" class="mt-4 p-3 rounded-md hidden" role="alert"></div>
+    </div>
+  </main>
+
+  <footer class="mt-8 text-gray-500 text-sm">Salt Keyserver Project | Expires in 5 min for security</footer>
+
+  <script>
+    const SERVER = "https://keyserver-backend.arsalanse.ir";
+
+    function generateSalt() {
+      const salt = crypto.randomUUID();  // Simple random salt generation
+      document.getElementById("upload-salt").value = salt;
+    }
+
+    async function upload(e) {
+      e.preventDefault();
+      const email = document.getElementById("upload-email").value.trim();
+      const salt = document.getElementById("upload-salt").value.trim();
+      if (!email || !salt || !email.includes('@')) return show("upload-result", "Invalid email or salt!", "bg-red-100 text-red-800");
+
+      show("upload-result", "Uploading...", "bg-blue-100 text-blue-800");  // Loading state
+      try {
+        const res = await fetch(`${SERVER}/upload-salt`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, salt })
+        });
+        if (res.ok) {
+          show("upload-result", `Uploaded!<br>Salt: ${salt}<br>Expires in 5 min`, "bg-green-100 text-green-800");
+        } else throw new Error();
+      } catch {
+        show("upload-result", "Upload failed! Check backend.", "bg-red-100 text-red-800");
+      }
+    }
+
+    async function search(e) {
+      e.preventDefault();
+      const email = document.getElementById("search-email").value.trim();
+      if (!email || !email.includes('@')) return show("search-result", "Invalid email!", "bg-red-100 text-red-800");
+
+      show("search-result", "Searching...", "bg-blue-100 text-blue-800");
+      try {
+        const res = await fetch(`${SERVER}/salt/${encodeURIComponent(email)}`);
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        const result = `Found!<br>Salt: ${data.salt} <button onclick="copyToClipboard('${data.salt}')" class="ml-2 text-blue-600 underline">Copy</button>`;
+        show("search-result", result, "bg-green-100 text-green-800");
+      } catch {
+        show("search-result", `No salt (expired or not uploaded)`, "bg-red-100 text-red-800");
+      }
+    }
+
+    async function checkTTL(e) {
+      e.preventDefault();
+      const email = document.getElementById("search-email").value.trim();
+      if (!email || !email.includes('@')) return show("search-result", "Invalid email!", "bg-red-100 text-red-800");
+
+      show("search-result", "Checking...", "bg-blue-100 text-blue-800");
+      try {
+        const res = await fetch(`${SERVER}/ttl/${encodeURIComponent(email)}`);
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        show("search-result", `Time left: ${data.seconds_left} sec (~${Math.floor(data.seconds_left/60)} min)`, "bg-yellow-100 text-yellow-800");
+      } catch {
+        show("search-result", `No salt found`, "bg-red-100 text-red-800");
+      }
+    }
+
+    function show(id, html, classes) {
+      const el = document.getElementById(id);
+      el.innerHTML = html;  // Use innerHTML for buttons
+      el.className = `mt-4 p-3 rounded-md ${classes}`;
+      el.classList.remove('hidden');
+      el.style.transition = 'opacity 0.3s';  // Fade-in
+      el.style.opacity = 1;
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => alert("Salt copied!"));
+    }
+  </script>
+
+</body>
+</html>

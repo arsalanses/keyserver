@@ -40,6 +40,20 @@ def get_ttl(email: str):
         raise HTTPException(404, "No salt")
     return {"email": email, "seconds_left": ttl}
 
+@app.post("/upload-salt-anon")
+def upload_salt_anon(data: SaltUpload, request):
+    path = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(12))
+    r.set(f"salt:{path}", data.salt, ex=300)
+    url = f"{str(request.base_url).rstrip('/')}/s/{path}"
+    return {"status": "ok", "url": url}
+
+@app.get("/s/{path}")
+def get_salt_by_path(path: str):
+    salt = r.get(f"salt:{path}")
+    if not salt:
+        raise HTTPException(404, "Not found or expired")
+    return {"salt": salt.decode()}
+
 @app.get("/")
 def home():
     return {"message": "Salt Keyserver", "endpoints": ["/upload-salt", "/salt/{email}", "/ttl/{email}"]}
