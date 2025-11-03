@@ -1,6 +1,8 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from typing import Optional
+from fastapi import Request
 import redis
 import base64
 
@@ -17,7 +19,7 @@ app.add_middleware(
 )
 
 class SaltUpload(BaseModel):
-    email: str
+    email: Optional[str] = None
     salt: str
 
 @app.post("/upload-salt")
@@ -41,7 +43,7 @@ def get_ttl(email: str):
     return {"email": email, "seconds_left": ttl}
 
 @app.post("/upload-salt-anon")
-def upload_salt_anon(data: SaltUpload, request):
+def upload_salt_anon(data: SaltUpload, request: Request):
     path = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(12))
     r.set(f"salt:{path}", data.salt, ex=300)
     url = f"{str(request.base_url).rstrip('/')}/s/{path}"
