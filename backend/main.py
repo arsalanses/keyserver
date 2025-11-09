@@ -47,7 +47,7 @@ def get_salt_by_path(path: str):
         raise HTTPException(404, "Not found or expired")
 
     limit_counter = r.get(f"limit_counter:{path}")
-    if int(limit_counter) <= 0:
+    if int(limit_counter) < 1:
         raise HTTPException(404, "Not found or counter expired")
 
     limit_counter = r.decr(f"limit_counter:{path}")
