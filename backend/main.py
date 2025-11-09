@@ -55,4 +55,4 @@ def get_salt_by_path(path: str):
 
 @app.get("/")
 def home():
-    return {"message": "Salt Keyserver", "endpoints": ["/upload-salt", "/salt/{email}", "/ttl/{email}"]}
+    return {"message": "Keyserver"}
