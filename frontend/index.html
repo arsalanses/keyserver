@@ -1,224 +1,210 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-gray-50">
+<html lang="fa" dir="rtl" class="h-full bg-gray-50">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title> پلتفرم اشتراک کلید امن🧂 </title>
+  <title>پلتفرم اشتراک کلید امن</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans+Arabic:wght@100..900&family=Shabnam&family=Sahel&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;900&family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/51b2e20d1e.js" crossorigin="anonymous"></script>
   <style>
-    body {
-      font-family: 'Vazirmatn', 'Noto Sans Arabic', 'Shabnam', 'Sahel', Tahoma, Arial, sans-serif;
-    }
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
+    body { font-family: 'Vazirmatn', 'Noto Sans Arabic', Tahoma, sans-serif; }
+    .tab-btn { @apply px-6 py-3 text-sm font-semibold transition-all; }
+    .tab-btn.active { @apply text-indigo-600 border-b-2 border-indigo-600; }
+    .tab-btn:not(.active) { @apply text-gray-500 hover:text-gray-700; }
+    pre { direction: ltr; text-align: left; }
+    input, textarea { direction: ltr; text-align: left; }
   </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100">
 
-  <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-6 space-y-6">
+  <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden">
 
-    <h1 class="text-2xl font-bold text-center text-gray-800">پلتفرم اشتراک کلید امن🧂</h1>
-    <div class="bg-yellow-200 text-yellow-800 p-3 rounded-md mt-2 font-semibold">
-      <i class="fas fa-exclamation-triangle mr-2"></i>کلید ها به صورت خودکار پس از مدت زمان مشخص حذف میشوند. پیش فرض پنج دقیقه
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
+      <h1 class="text-2xl font-bold text-center">پلتفرم اشتراک کلید امن</h1>
+      <p class="text-center mt-2 opacity-90 text-sm">به اشتراک‌گذاری موقت و امن Salt بپردازید</p>
+    </div>
+
+    <!-- Warning -->
+    <div class="mx-6 mt-4 bg-amber-100 border border-amber-300 text-amber-800 p-4 rounded-lg flex items-center">
+      <i class="fas fa-exclamation-triangle ml-3"></i>
+      <span class="font-medium">کلیدها به صورت خودکار پس از زمان تعیین‌شده حذف می‌شوند (پیش‌فرض: ۵ دقیقه)</span>
     </div>
 
     <!-- Tabs -->
-    <div class="flex space-x-1 border-b">
-      <!-- <button id="tab-email"
-        class="tab-btn px-4 py-2 text-sm font-medium text-blue-600 border-b-2 border-blue-600">
-        Email Mode
-      </button> -->
-      <button id="tab-anon" class="tab-btn active px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800">
-        لینک امن
-      </button>
+    <div class="flex border-b border-gray-200 mt-6">
+      <button id="tab-anon" class="tab-btn active">روش لینک امن (ناشناس)</button>
     </div>
 
-    <!-- Email Mode -->
-    <div id="email" class="tab-content space-y-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Email</label>
-        <input type="email" id="email-input" placeholder="you@example.com"
-          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-      </div>
+    <!-- Anonymous Tab -->
+    <div id="anon" class="tab-content active p-6 space-y-6">
 
+      <!-- Salt Input -->
       <div>
-        <div class="flex justify-between items-center mb-1">
-          <label class="text-sm font-medium text-gray-700">Salt</label>
-          <button type="button" onclick="generateSalt('salt-email')"
-            class="text-xs px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
-            Generate
+        <div class="flex justify-between items-center mb-2">
+          <label class="text-sm font-semibold text-gray-700">مقدار کلید (Salt)</label>
+          <button type="button" onclick="generateSalt()"
+            class="text-xs px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition">
+            <i class="fas fa-dice ml-1"></i> تولید کلید تصادفی
           </button>
         </div>
-        <textarea id="salt-email" rows="3" maxlength="256" placeholder="Click Generate or paste salt..."
-          class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          required></textarea>
+        <textarea id="salt-input" rows="4" maxlength="512" placeholder="Base64 salt را وارد کنید یا دکمه تولید را بزنید..."
+          class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
       </div>
 
-      <button onclick="uploadWithEmail()"
-        class="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700">
-        Upload Salt
+      <!-- Options -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">زمان انقضا (ثانیه)</label>
+          <input type="number" id="expires" value="300" min="60" max="86400"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">حداکثر تعداد استفاده</label>
+          <input type="number" id="limit" value="5" min="1" max="100"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+        </div>
+      </div>
+
+      <!-- Upload Button -->
+      <button onclick="uploadSalt()"
+        class="w-full py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition flex items-center justify-center">
+        <i class="fas fa-link ml-2"></i> ساخت لینک امن
       </button>
-      <pre id="result-email" class="mt-4 p-3 bg-gray-100 rounded text-sm overflow-x-auto hidden"></pre>
-      <div class="pt-4 border-t">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Retrieve by Email</label>
-        <div class="flex space-x-2">
-          <input type="email" id="fetch-email" placeholder="you@example.com"
-            class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm">
-          <button onclick="fetchByEmail()"
-            class="px-4 py-2 bg-gray-600 text-white font-medium rounded-md hover:bg-gray-700">
-            Get
+
+      <!-- Upload Result -->
+      <div id="upload-result" class="hidden bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="font-semibold text-green-600">لینک با موفقیت ساخته شد!</span>
+          <button onclick="this.closest('#upload-result').classList.add('hidden')"
+            class="text-gray-500 hover:text-gray-700"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="text" id="generated-url" readonly class="flex-1 px-3 py-2 bg-white border rounded-lg text-sm">
+          <button onclick="copyToClip('generated-url')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            <i class="fas fa-copy"></i>
           </button>
         </div>
-        <pre id="fetch-result" class="mt-3 p-3 bg-gray-100 rounded text-sm overflow-x-auto hidden"></pre>
+        <div class="text-xs text-gray-600 space-y-1">
+          <div>انقضا: <span id="exp-sec"></span> ثانیه</div>
+          <div>حداکثر استفاده: <span id="max-use"></span></div>
+        </div>
       </div>
-    </div>
 
-    <!-- Anonymous Mode -->
-    <div id="anon" class="tab-content active space-y-4">
-      <div>
-        <div class="flex justify-between items-center mb-1">
-          <label class="text-sm font-medium text-gray-700">مقدار کلید</label>
-          <button type="button" onclick="generateSalt('salt-anon')"
-            class="text-xs px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
-            ایجاد کلید تصادفی
+      <hr class="border-gray-300">
+
+      <!-- Retrieve Section -->
+      <div class="space-y-4">
+        <h3 class="font-semibold text-gray-800">دریافت کلید از لینک</h3>
+        <div class="flex gap-2">
+          <input type="text" id="retrieve-path" placeholder="مثال: s/AbCd1234EfGh یا لینک کامل"
+            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm">
+          <button onclick="fetchSalt()"
+            class="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition">
+            <i class="fas fa-download ml-1"></i> دریافت
           </button>
         </div>
-        <textarea id="salt-anon" rows="3" maxlength="256" placeholder="Click Generate or paste Base64 salt..."
-          class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          required></textarea>
+
+        <div id="fetch-result" class="hidden bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-semibold text-emerald-600">کلید دریافت شد!</span>
+            <button onclick="this.closest('#fetch-result').classList.add('hidden')"
+              class="text-gray-500 hover:text-gray-700"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="flex items-center gap-2">
+            <code id="fetched-salt" class="flex-1 px-3 py-2 bg-white border rounded-lg font-mono text-sm break-all"></code>
+            <button onclick="copyToClipText(document.getElementById('fetched-salt').textContent)"
+              class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+          <div class="text-xs text-gray-600">
+            استفاده باقی‌مانده: <span id="remaining"></span> | 
+            زمان باقی‌مانده: حدود <span id="ttl"></span> ثانیه
+          </div>
+        </div>
       </div>
 
-      <button onclick="uploadAnon()"
-        class="w-full py-2 px-4 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700">
-        ساخت لینک امن
-      </button>
-      <pre id="result-anon" class="mt-4 p-3 bg-gray-100 rounded text-sm overflow-x-auto hidden"></pre>
-
-      <div class="pt-4 border-t">
-        <label class="block text-sm font-medium text-gray-700 mb-1">لینک امن برای بازگردانی</label>
-        <input type="text" id="anon-url" placeholder="https://keyserver-backend.arsalanse.ir/s/abc123..."
-          class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm">
-        <button onclick="fetchByLink()"
-          class="mt-2 w-full py-2 px-4 bg-gray-600 text-white font-medium rounded-md hover:bg-gray-700">
-          دریافت
-        </button>
-        <pre id="link-result" class="mt-3 p-3 bg-gray-100 rounded text-sm overflow-x-auto hidden"></pre>
-      </div>
     </div>
-
   </div>
 
   <script>
     const API_BASE = "https://keyserver-backend.arsalanse.ir";
 
-    // Tab switching
-    document.getElementById('tab-email').onclick = () => switchTab('email');
-    document.getElementById('tab-anon').onclick = () => switchTab('anon');
-
-    function switchTab(id) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('text-blue-600', 'border-blue-600');
-        btn.classList.add('text-gray-600');
-      });
-      document.getElementById(id).classList.add('active');
-      document.getElementById(`tab-${id}`).classList.add('text-blue-600', 'border-blue-600');
-      document.getElementById(`tab-${id}`).classList.remove('text-gray-600');
-    }
-
-    // Generate secure Base64 salt (16 bytes)
-    function generateSalt(id) {
+    // Generate random Base64 salt (16 bytes → ~22 chars URL-safe)
+    function generateSalt() {
       const array = new Uint8Array(16);
       crypto.getRandomValues(array);
       const base64 = btoa(String.fromCharCode(...array))
         .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-      document.getElementById(id).value = base64;
+      document.getElementById('salt-input').value = base64;
     }
 
-    // Show result
-    function showResult(id, data, isLink = false) {
+    // Copy to clipboard
+    function copyToClip(id) {
       const el = document.getElementById(id);
-      el.textContent = JSON.stringify(data, null, 2);
-      if (isLink && data.url) {
-        el.innerHTML = el.innerHTML.replace(
-          `"${data.url}"`,
-          `<a href="${data.url}" target="_blank" class="text-blue-600 underline">${data.url}</a>`
-        );
-      }
-      el.classList.remove('hidden');
+      el.select();
+      document.execCommand('copy');
+      alert('کپی شد!');
+    }
+    function copyToClipText(text) {
+      navigator.clipboard.writeText(text).then(() => alert('Salt کپی شد!'));
     }
 
-    // Email upload
-    async function uploadWithEmail() {
-      const email = document.getElementById('email-input').value.trim();
-      const salt = document.getElementById('salt-email').value.trim();
-      if (!email || !salt) return alert('Fill email and salt');
-      try {
-        const res = await fetch(`${API_BASE}/upload-salt`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, salt })
-        });
-        const data = await res.json();
-        showResult('result-email', res.ok ? data : { error: data.detail });
-      } catch (e) {
-        showResult('result-email', { error: e.message });
-      }
-    }
+    // Upload salt
+    async function uploadSalt() {
+      const salt = document.getElementById('salt-input').value.trim();
+      if (!salt) return alert('لطفاً کلید را تولید یا وارد کنید');
 
-    // Anon upload
-    async function uploadAnon() {
-      const salt = document.getElementById('salt-anon').value.trim();
-      if (!salt) return alert('Generate or enter salt');
+      const payload = {
+        salt,
+        expires_in: parseInt(document.getElementById('expires').value) || 300,
+        limit_counter: parseInt(document.getElementById('limit').value) || 5
+      };
+
       try {
         const res = await fetch(`${API_BASE}/upload-salt-anon`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ salt })
+          body: JSON.stringify(payload)
         });
+
         const data = await res.json();
-        showResult('result-anon', data, true);
-      } catch (e) {
-        showResult('result-anon', { error: e.message });
+        if (!res.ok) throw new Error(data.detail || 'خطا در سرور');
+
+        document.getElementById('generated-url').value = data.url;
+        document.getElementById('exp-sec').textContent = data.expires_in_seconds;
+        document.getElementById('max-use').textContent = data.limit_counter;
+        document.getElementById('upload-result').classList.remove('hidden');
+      } catch (err) {
+        alert('خطا: ' + err.message);
       }
     }
 
-    // Fetch by email
-    async function fetchByEmail() {
-      const email = document.getElementById('fetch-email').value.trim();
-      if (!email) return alert('Enter email');
-      try {
-        const res = await fetch(`${API_BASE}/salt/${encodeURIComponent(email)}`);
-        const data = await res.json();
-        showResult('fetch-result', res.ok ? data : { error: data.detail || 'Not found' });
-      } catch (e) {
-        showResult('fetch-result', { error: e.message });
-      }
-    }
+    // Fetch salt
+    async function fetchSalt() {
+      let input = document.getElementById('retrieve-path').value.trim();
+      if (!input) return alert('لینک یا مسیر را وارد کنید');
 
-    // Fetch by link
-    async function fetchByLink() {
-      let url = document.getElementById('anon-url').value.trim();
-      if (!url) return alert('Paste the link');
-      if (!url.startsWith('http')) url = API_BASE + url.replace(/^\/+/, '/');
+      let url = input.startsWith('http') ? input : `${API_BASE}/s/${input.replace(/^\/+s\//, '')}`;
+
       try {
         const res = await fetch(url);
         const data = await res.json();
-        showResult('link-result', res.ok ? data : { error: data.detail || 'Not found' });
-      } catch (e) {
-        showResult('link-result', { error: e.message });
+        if (!res.ok) throw new Error(data.detail || 'یافت نشد یا منقضی شده');
+
+        document.getElementById('fetched-salt').textContent = data.salt;
+        document.getElementById('remaining').textContent = data.limit_counter;
+        document.getElementById('ttl').textContent = data.expires_at;
+        document.getElementById('fetch-result').classList.remove('hidden');
+      } catch (err) {
+        alert('خطا: ' + err.message);
       }
     }
   </script>
-
 </body>
 
 </html>
