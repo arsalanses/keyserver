@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="Salt Keyserver (Email-based)")
+app = FastAPI(title="Salt Keyserver")
 
 r = redis.Redis(host='keyserver-redis', port=6379, db=0)
 
