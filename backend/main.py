@@ -23,6 +23,7 @@ app.add_middleware(
 class SaltUpload(BaseModel):
     email: Optional[str] = None
     salt: str
+    expires_in: Optional[int] = 300
 
 @app.post("/upload-salt")
 def upload_salt(data: SaltUpload):
@@ -46,17 +47,19 @@ def get_ttl(email: str):
 
 @app.post("/upload-salt-anon")
 def upload_salt_anon(data: SaltUpload, request: Request):
+    ex_time = data.expires_in
+
     path = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(12))
-    r.set(f"salt:{path}", data.salt, ex=300)
+    r.set(f"salt:{path}", data.salt, ex=ex_time)
     url = f"{str(request.base_url).rstrip('/')}/s/{path}"
-    return {"status": "ok", "url": url}
+    return {"status": "ok", "url": url, "expires_in_seconds": ex_time, "expires_at": r.ttl(f"salt:{path}")}
 
 @app.get("/s/{path}")
 def get_salt_by_path(path: str):
     salt = r.get(f"salt:{path}")
     if not salt:
         raise HTTPException(404, "Not found or expired")
-    return {"salt": salt.decode()}
+    return {"salt": salt.decode(), "expires_at": r.ttl(f"salt:{path}")}
 
 @app.get("/")
 def home():
