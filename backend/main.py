@@ -57,9 +57,11 @@ def upload_salt_anon(data: SaltUpload, request: Request):
 @app.get("/s/{path}")
 def get_salt_by_path(path: str):
     salt = r.get(f"salt:{path}")
+    count_key = f"count:{path}"
     if not salt:
         raise HTTPException(404, "Not found or expired")
-    return {"salt": salt.decode(), "expires_at": r.ttl(f"salt:{path}")}
+    views = r.incr(count_key)
+    return {"salt": salt.decode(), "views": views, "expires_at": r.ttl(f"salt:{path}")}
 
 @app.get("/")
 def home():
