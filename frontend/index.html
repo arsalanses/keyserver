@@ -183,6 +183,8 @@
     async function uploadSalt() {
       const salt = document.getElementById('salt-input').value.trim();
       if (!salt) return alert('لطفاً کلید را تولید یا وارد کنید');
+      if (parseInt(document.getElementById('expires').value) > 3600) return alert('مقدار خارج از رنج');
+      if (parseInt(document.getElementById('limit').value) > 100) return alert('مقدار خارج از رنج');
 
       const payload = {
         salt,
