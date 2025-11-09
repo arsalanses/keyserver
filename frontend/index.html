@@ -6,15 +6,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>پلتفرم اشتراک کلید امن</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;900&family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;900&family=Noto+Sans+Arabic:wght@400;700&display=swap"
+    rel="stylesheet">
   <script src="https://kit.fontawesome.com/51b2e20d1e.js" crossorigin="anonymous"></script>
   <style>
-    body { font-family: 'Vazirmatn', 'Noto Sans Arabic', Tahoma, sans-serif; }
-    .tab-btn { @apply px-6 py-3 text-sm font-semibold transition-all; }
-    .tab-btn.active { @apply text-indigo-600 border-b-2 border-indigo-600; }
-    .tab-btn:not(.active) { @apply text-gray-500 hover:text-gray-700; }
-    pre { direction: ltr; text-align: left; }
-    input, textarea { direction: ltr; text-align: left; }
+    body {
+      font-family: 'Vazirmatn', 'Noto Sans Arabic', Tahoma, sans-serif;
+    }
+
+    .tab-btn {
+      @apply px-6 py-3 text-sm font-semibold transition-all;
+    }
+
+    .tab-btn.active {
+      @apply text-indigo-600 border-b-2 border-indigo-600;
+    }
+
+    .tab-btn:not(.active) {
+      @apply text-gray-500 hover:text-gray-700;
+    }
+
+    pre {
+      direction: ltr;
+      text-align: left;
+    }
+
+    input,
+    textarea {
+      direction: ltr;
+      text-align: left;
+    }
   </style>
 </head>
 
@@ -85,7 +107,8 @@
         </div>
         <div class="flex items-center gap-2">
           <input type="text" id="generated-url" readonly class="flex-1 px-3 py-2 bg-white border rounded-lg text-sm">
-          <button onclick="copyToClip('generated-url')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <button onclick="copyToClip('generated-url')"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
             <i class="fas fa-copy">کپی</i>
           </button>
         </div>
@@ -116,14 +139,15 @@
               class="text-gray-500 hover:text-gray-700"><i class="fas fa-times"></i></button>
           </div>
           <div class="flex items-center gap-2">
-            <code id="fetched-salt" class="flex-1 px-3 py-2 bg-white border rounded-lg font-mono text-sm break-all"></code>
+            <code id="fetched-salt"
+              class="flex-1 px-3 py-2 bg-white border rounded-lg font-mono text-sm break-all"></code>
             <button onclick="copyToClipText(document.getElementById('fetched-salt').textContent)"
               class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
               <i class="fas fa-copy"></i>
             </button>
           </div>
           <div class="text-xs text-gray-600">
-            استفاده باقی‌مانده: <span id="remaining"></span> | 
+            استفاده باقی‌مانده: <span id="remaining"></span> |
             زمان باقی‌مانده: حدود <span id="ttl"></span> ثانیه
           </div>
         </div>
