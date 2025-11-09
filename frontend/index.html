@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Salt KeyServer</title>
+  <title> پلتفرم اشتراک کلید امن🧂 </title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .tab-content {
@@ -21,13 +21,13 @@
 
   <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-6 space-y-6">
 
-    <h1 class="text-2xl font-bold text-center text-gray-800">Salt KeyServer🧂</h1>
+    <h1 class="text-2xl font-bold text-center text-gray-800">پلتفرم اشتراک کلید امن🧂</h1>
     <div class="bg-yellow-200 text-yellow-800 p-3 rounded-md mt-2 font-semibold">
-      <i class="fas fa-exclamation-triangle mr-2"></i>Salts auto-delete after 5 minutes!
+      <i class="fas fa-exclamation-triangle mr-2"></i>کلید ها به صورت خودکار پس از مدت زمان مشخص حذف میشوند. پیش فرض پنج دقیقه
     </div>
 
     <!-- Tabs -->
-    <div class="flex space-x-1 border-b">
+    <!-- <div class="flex space-x-1 border-b">
       <button id="tab-email"
         class="tab-btn active px-4 py-2 text-sm font-medium text-blue-600 border-b-2 border-blue-600">
         Email Mode
@@ -35,10 +35,10 @@
       <button id="tab-anon" class="tab-btn px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800">
         Anonymous Link
       </button>
-    </div>
+    </div> -->
 
     <!-- Email Mode -->
-    <div id="email" class="tab-content active space-y-4">
+    <!-- <div id="email" class="tab-content active space-y-4">
       <div>
         <label class="block text-sm font-medium text-gray-700">Email</label>
         <input type="email" id="email-input" placeholder="you@example.com"
@@ -63,7 +63,6 @@
         Upload Salt
       </button>
       <pre id="result-email" class="mt-4 p-3 bg-gray-100 rounded text-sm overflow-x-auto hidden"></pre>
-      <!-- Retrieve by Email (shared) -->
       <div class="pt-4 border-t">
         <label class="block text-sm font-medium text-gray-700 mb-1">Retrieve by Email</label>
         <div class="flex space-x-2">
@@ -76,7 +75,7 @@
         </div>
         <pre id="fetch-result" class="mt-3 p-3 bg-gray-100 rounded text-sm overflow-x-auto hidden"></pre>
       </div>
-    </div>
+    </div> -->
 
     <!-- Anonymous Mode -->
     <div id="anon" class="tab-content space-y-4">
@@ -85,7 +84,7 @@
           <label class="text-sm font-medium text-gray-700">Salt</label>
           <button type="button" onclick="generateSalt('salt-anon')"
             class="text-xs px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
-            Generate
+            ایجاد کلید تصادفی
           </button>
         </div>
         <textarea id="salt-anon" rows="3" maxlength="256" placeholder="Click Generate or paste Base64 salt..."
@@ -95,17 +94,17 @@
 
       <button onclick="uploadAnon()"
         class="w-full py-2 px-4 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700">
-        Get Anonymous Link
+        ساخت لینک امن
       </button>
       <pre id="result-anon" class="mt-4 p-3 bg-gray-100 rounded text-sm overflow-x-auto hidden"></pre>
 
       <div class="pt-4 border-t">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Paste Link to Retrieve</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">لینک امن برای بازگردانی</label>
         <input type="text" id="anon-url" placeholder="https://keyserver-frontend.arsalanse.ir/s/abc123..."
           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm">
         <button onclick="fetchByLink()"
           class="mt-2 w-full py-2 px-4 bg-gray-600 text-white font-medium rounded-md hover:bg-gray-700">
-          Fetch Salt
+          دریافت
         </button>
         <pre id="link-result" class="mt-3 p-3 bg-gray-100 rounded text-sm overflow-x-auto hidden"></pre>
       </div>
