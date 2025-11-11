@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(title="Salt Keyserver")
 
 r = redis.Redis(host='keyserver-redis', port=6379, db=0)
+rr1 = redis.Redis(host='keyserver-redis-r1', port=6379, db=0)
 
 app.add_middleware(
     CORSMiddleware,
@@ -42,11 +43,11 @@ def upload_salt_anon(data: SaltUpload, request: Request):
 
 @app.get("/s/{path}")
 def get_salt_by_path(path: str):
-    salt = r.get(f"salt:{path}")
+    salt = rr1.get(f"salt:{path}")
     if not salt:
         raise HTTPException(404, "Not found or expired")
 
-    limit_counter = r.get(f"limit_counter:{path}")
+    limit_counter = rr1.get(f"limit_counter:{path}")
     if int(limit_counter) < 1:
         raise HTTPException(404, "Not found or counter expired")
 
