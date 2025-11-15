@@ -32,7 +32,8 @@ class SaltUpload(BaseModel):
 def ai_random_string(length: int = 20) -> str:
     prompt = "randomstring:"
     result = generator(prompt, max_length=length + 20, num_return_sequences=1)[0]['generated_text']
-    
+    print(f"result: {result}")
+
     clean = ''.join(c for c in result[len(prompt):] if c in string.ascii_letters + string.digits)
     
     return clean[:length]

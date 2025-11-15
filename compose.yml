@@ -51,6 +51,8 @@ services:
   keyserver-backend:
     image: harbor.rootcloud.ir/devops/keyserver-backend:latest
     restart: unless-stopped
+    volumes:
+      - "./site-packages:/usr/local/lib/python3.14/site-packages"
     logging:
       driver: "json-file"
       options:
